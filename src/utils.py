@@ -1,5 +1,5 @@
 """
-    This module contains some useful functions for the project.
+    Functions of useful utilities.
 """
 
 import json
@@ -11,25 +11,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 
-def safe_create_dir(dir):
-    if not os.path.exists(dir):
-        os.makedirs(dir, exist_ok=True)
-        print(f"Directory {dir} created!")
-    else:
-        raise ValueError(f"Directory {dir} already exists!")
-
-
 def timeit(function):
-    """
-    Decorator who prints the execution time of a function
-
-    :param function: function to be executed
-    :type function: function
-
-    :return:
-    :rtype: function
-    """
-
     def timed(*args, **kw):
         ts = time.time()
         print('\nExecuting %r ' % function.__name__)
@@ -93,16 +75,6 @@ def plot_model_metrics(history, metrics, save_dir=None):
 def safe_save_model_history(history, save_dir, save_type):
     """
     Save the model history in a specified file.
-
-    :param history: model history
-    :type history: keras.callbacks.History
-    :param save_dir: path of the directory where to save the file
-    :type save_dir: str
-    :param save_type: type of the file to save
-    :type save_type: str
-
-    :return: print a message if the file is saved
-    :rtype: str
     """
 
     # Save model history avoiding overwriting
@@ -151,16 +123,7 @@ def safe_save_model_history(history, save_dir, save_type):
 def safe_save_model_architecture(model, save_dir):
     """
     Save the model architecture in a json file.
-
-    :param model: keras model
-    :type model: keras.Model
-    :param save_dir: path of the directory where to save the file
-    :type save_dir: str
-
-    :return: print a message if the file is saved
-    :rtype: str
     """
-
     # Save model architecture avoiding overwriting
     if os.path.exists(os.path.join(save_dir, "model_architecture.json")):
         return print("The json file already exists! Check the save directory.")
@@ -175,14 +138,6 @@ def safe_save_model_architecture(model, save_dir):
 def safe_save_model_weights(model, save_dir):
     """
     Save the model weights in a h5 file.
-
-    :param model: keras model
-    :type: keras.Model
-    :param save_dir: path of the directory where to save the file
-    :type: str
-
-    :return: print a message if the file is saved
-    :rtype: str
     """
     # Save model architecture avoiding overwriting
     if os.path.exists(os.path.join(save_dir, "model_weights.h5")):
@@ -196,15 +151,6 @@ def safe_save_model_weights(model, save_dir):
 def safe_save_model(model, save_dir, model_save_type):
     """
     Save the model in a specified file.
-
-    :param model_save_type:
-    :param model: keras model
-    :type: keras.Model
-    :param save_dir: path of the directory where to save the file
-    :type: str
-
-    :return: print a message if the file is saved
-    :rtype: str
     """
     # Save model architecture avoiding overwriting
     if os.path.exists(os.path.join(save_dir, "model.h5")):
@@ -223,77 +169,19 @@ def safe_save_model(model, save_dir, model_save_type):
             raise ValueError('The save type is not supported! Check the save type. Supported types: h5, keras.')
 
 
-def safe_save_hyperparams(hyperparams_dict, save_dir):
-    """
-    Save the hyperparams in a json file.
-
-    :param hyperparams_dict:
-    :param save_dir:
-
-    :return:
-    :rtype:
-    """
-    # Save model architecture avoiding overwriting
-    if os.path.exists(os.path.join(save_dir, "hyperparams.json")):
-        return print("The hyperparams file already exists! Check the save directory.")
-
-    else:
-        with open(os.path.join(save_dir, "hyperparams.json"), "w") as f:
-            json.dump(hyperparams_dict, f, indent=4)
-            f.close()
-        return print("Hyperparams saved!")
-
-
-def safe_save_training_results(hyperparams_dict, model, model_save_type, history, his_save_type, save_dir):
+def safe_save_training_results(save_dir, model, history, history_save_type='csv', model_save_type='keras'):
     """
     Save the training results including all in a directory.
-
-    :param his_save_type:
-    :param model_save_type:
-    :param history:
-    :param hyperparams_dict:
-    :type hyperparams_dict:
-    :param model:
-    :type model:
-    :param save_dir:
-    :type save_dir:
-
-    :return:
-    :rtype:
     """
     if os.path.exists(save_dir):
         raise ValueError("The save directory already exists! Check the save directory.")
 
-
     else:
-        os.makedirs(save_dir, exist_ok=True)
-
-        if hyperparams_dict is not None:
-            safe_save_hyperparams(hyperparams_dict, save_dir)
-
-        # Save the model history
-        safe_save_model_history(history, save_dir, his_save_type)
-
-        # Save the model architecture
-        safe_save_model_architecture(model, save_dir)
-
-        # Save the model weights
-        safe_save_model_weights(model, save_dir)
-
-        # Save the model
-        safe_save_model(model, save_dir, model_save_type)
-
-
-def safe_save_Hannick_training_results(model, model_save_type, history, his_save_type, save_dir):
-    if os.path.exists(save_dir):
-        raise ValueError("The save directory already exists! Check the save directory.")
-
-
-    else:
+        # Create the save directory if not exists. Ok if exists
         os.makedirs(save_dir, exist_ok=True)
 
         # Save the model history
-        safe_save_model_history(history, save_dir, his_save_type)
+        safe_save_model_history(history, save_dir, history_save_type)
 
         # Save the model architecture
         safe_save_model_architecture(model, save_dir)

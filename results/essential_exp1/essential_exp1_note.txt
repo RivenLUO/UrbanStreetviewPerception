@@ -1,0 +1,73 @@
+About Essential Exp1:
+
+    Training comparison models and ranking models on each dataset,
+    using softmax loss and binary cross-entropy loss, respectively.
+
+    comparison model (Siamese): VGG19 + Fusion Network (SS-CNN)
+    ranking model (Siamese): VGG19 + Ranking Network (RSS-CNN) + Simple Difference
+
+    VGG19 is the only backbone experimented for comparison and ranking models
+
+    Model Architecture:
+        VGG19 as the backbone of comparison and ranking models.
+
+        Fusion Network (SS-CNN refer to Dubey et al. (2016)) as comparison module.
+        Softmax as output (e.g., [1,0] or [0,1]) with binary cross-entropy loss
+
+        Ranking Network (RSS-CNN refer to Dubey et al. (2016)) as ranking module.
+        Simple Difference to calculate the distance between two ranked scores.
+        Sigmoid as output to convert the distance to a probability, with binary cross-entropy loss.
+
+    Training with Hyperparameter Optimization:
+        Utilizing Bayesian optimization to find the optimal hyperparameters
+        for baseline models on each dataset.
+
+        1. Hyperparameters of comparison model:
+
+            - Data Preprocessing: Resize(224, 224), VGG19 preprocessing
+            - Data Augmentation: RandomZoom(0.2), RandomRotation(0.2), RandomContrast(0.4)
+
+            - Architecture:
+
+                - Backbone Selection: VGG19
+                - Backbone Pretrained: ImageNet
+                - Backbone Fine-tuning: top 4 layers
+
+                - Fusion Network:
+                    - num_conv_layers: Fixed (3)
+                    - num_conv_filters: Int (min=256, max=512, step=128)
+                    - conv_kernel_size: Fixed (3)
+                    - conv_strides: Fixed (1)
+                    - conv_padding: Choice (same, valid)
+                    - conv_activation: Choice (relu, linear)
+
+                - Training:
+                    - optimizer: Choice (adam, sgd, rmsprop)
+                    - learning_rate: Choice (1e-4, 1e-5) for each optimizer
+
+        2. Hyperparameters of ranking model:
+
+            - Data Preprocessing: Resize(224, 224), VGG19 preprocessing
+            - Data Augmentation: RandomZoom(0.2), RandomRotation(0.2), RandomContrast(0.4)
+
+            - Architecture:
+
+                - Backbone Selection: VGG19
+                - Backbone Pretrained: ImageNet
+                - Backbone Fine-tuning: Int (min=1, max=4, step=1, default=4)
+
+                - Ranking module:
+                    - num_dense_layers: Int (min=2, max=3, step=1)
+                    - num_dense_units: Int (min=32, max=96, step=16, default=64)
+                    - dense_activation: Choice (relu, linear, sigmoid, tanh)
+                    - dropout_rate: Float (min=0.0, max=0.5, step=0.1, default=0.3)
+                    - score_activation: Choice (relu, linear, sigmoid, tanh)
+
+                - Simple Difference module:
+                    - final_activation: Choice (relu, linear, sigmoid, tanh)
+
+                - Training:
+                    - optimizer: Choice (adam, sgd, rmsprop)
+                    - learning_rate: Choice (1e-4, 1e-5, 1e-6) for each optimizer
+
+

@@ -1,0 +1,14 @@
+Preprocessing
+    split ratio: 60/20/20 (train/val/test)
+    shuffling seed: NA
+
+Samples of the dataset:
+    - train:    2084
+    - val:      695
+    - test:     695
+    - total:    3474
+    *Note: this dataset was not well-cleaned, so duplicates exist (4563 vs 4536).
+
+Label encoding format:
+    - 0:        'left'
+    - 1:        'right'
